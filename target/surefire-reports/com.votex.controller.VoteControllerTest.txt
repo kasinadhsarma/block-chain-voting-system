@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.votex.controller.VoteControllerTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.409 s - in com.votex.controller.VoteControllerTest
