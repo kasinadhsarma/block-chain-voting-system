@@ -26,6 +26,9 @@ jobs:
     - name: Run tests
       run: mvn test
     
+    - name: Run integration tests
+      run: mvn verify
+    
     - name: Generate test coverage report
       run: mvn jacoco:report
     
@@ -57,6 +60,9 @@ jobs:
     - name: Check code style
       run: mvn checkstyle:check
     
+    - name: SonarQube Analysis
+      run: mvn sonar:sonar
+    
   security-scan:
     runs-on: ubuntu-latest
     needs: build
@@ -72,6 +78,9 @@ jobs:
     
     - name: OWASP Dependency Check
       run: mvn org.owasp:dependency-check-maven:check
+    
+    - name: Snyk Security Scan
+      run: snyk test
     
     - name: Upload security report
       uses: actions/upload-artifact@v2
