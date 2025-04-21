@@ -19,6 +19,8 @@
     
     <properties>
         <java.version>11</java.version>
+        <jacoco.version>0.8.10</jacoco.version>
+        <owasp.dependency.check.version>8.4.0</owasp.dependency.check.version>
     </properties>
     
     <dependencies>
@@ -84,6 +86,38 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+            
+            <!-- JaCoCo plugin for code coverage -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <!-- OWASP Dependency Check for security vulnerabilities -->
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>${owasp.dependency.check.version}</version>
+                <configuration>
+                    <failBuildOnCVSS>7</failBuildOnCVSS>
                 </configuration>
             </plugin>
         </plugins>

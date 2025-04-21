@@ -23,11 +23,8 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
     
-    - name: Run tests
+    - name: Run tests with coverage
       run: mvn test
-    
-    - name: Generate test coverage report
-      run: mvn jacoco:prepare-agent test jacoco:report
     
     - name: Upload test coverage report
       uses: actions/upload-artifact@v4
@@ -68,7 +65,7 @@ jobs:
         cache: maven
     
     - name: OWASP Dependency Check
-      run: mvn org.owasp:dependency-check-maven:check
+      run: mvn dependency-check:check
     
     - name: Upload security report
       uses: actions/upload-artifact@v4
@@ -76,3 +73,29 @@ jobs:
         name: security-report
         path: target/dependency-check-report.html
         retention-days: 5
+    
+  docker:
+    runs-on: ubuntu-latest
+    needs: [build, code-quality, security-scan]
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: Login to DockerHub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: votex/blockchain-voting-system:latest,votex/blockchain-voting-system:${{ github.sha }}
+        cache-from: type=registry,ref=votex/blockchain-voting-system:latest
+        cache-to: type=inline
